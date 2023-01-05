@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 
+#include "headers/FileHandler.hpp"
 #include "headers/Token.hpp"
 
 int main(int argc, char** argv) {
@@ -13,11 +14,18 @@ int main(int argc, char** argv) {
     throw std::invalid_argument("compiler.exe fileName.cxs [extra <args>]");
   }
   std::cout << "File: " << argv[1] << std::endl;
-  TokenType* tokenType = new TokenType();
-  std::string data = "1";
-  Token* token = new Token(tokenType, TokenType::TYPE::OTHER, data);
-  std::cout << *token << std::endl;
-  delete token;
-  delete tokenType;
+
+  FileHandler* fileHandler = new FileHandler();
+  std::vector<Token*>* tokens = fileHandler->Tokenize(argv[1]);
+  if (tokens != nullptr) {
+    for (unsigned int i = 0; i < tokens->size(); i++) {
+      Token* token = (*(tokens))[i];
+      std::cout << *token << std::endl;
+      delete token;
+    }
+    delete tokens;
+  }
+  delete fileHandler;
+
   return 0;
 }
